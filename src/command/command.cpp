@@ -111,7 +111,7 @@ control_ret_t Command::command_set(const cmd_param_t * values)
         command_bytes_from_value(cmd.type, data, i, values[i]);
     }
 
-    control_ret_t ret = device->device_set(cmd.res_id, cmd.cmd_id, data, data_len);
+    control_ret_t ret = device->device_set(instance_id, cmd.cmd_id, data, data_len);
     int write_attempts = 1;
 
     while(1)
@@ -128,7 +128,7 @@ control_ret_t Command::command_set(const cmd_param_t * values)
         }
         else if(ret == SERVICER_COMMAND_RETRY)
         {
-            ret = device->device_set(cmd.res_id, cmd.cmd_id, data, data_len);
+            ret = device->device_set(instance_id, cmd.cmd_id, data, data_len);
             write_attempts++;
         }
         else
