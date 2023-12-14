@@ -6,6 +6,8 @@
 
 #include "command.hpp"
 
+#define INVALID_INSTANCE_ID (0xff)
+
 /**
  * @brief Return the absolute path to the command map file
  *
@@ -47,6 +49,8 @@ bool get_bypass_range_check(int * argc, char ** argv);
  * @note Will decrement argc, if option is present
  */
 uint8_t get_band_option(int * argc, char ** argv);
+
+uint8_t get_instance_id(int *argc, char **argv);
 
 /** @brief Print application help menu */
 control_ret_t print_help_menu();

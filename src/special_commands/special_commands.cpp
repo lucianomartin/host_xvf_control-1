@@ -27,7 +27,8 @@ opt_t options[] = {
     {"--set-nlmodel-buffer",      "-sn",       "set NLModel filter from .bin file, default is nlm_buffer.bin"                                   },
     {"--test-control-interface",  "-tc",       "test control interface, default is test_buffer.bin"                                             },
     {"--test-bytestream",         "-tb",       "test device by writing a user defined stream of bytes to it"                                    },
-    {"--band",                    "-b",        "NL model band to set/get (0: low-band, 1: high-band), default is 0 if unspecified"              }
+    {"--band",                    "-b",        "NL model band to set/get (0: low-band, 1: high-band), default is 0 if unspecified"              },
+    {"--instance-id",             "-i",        "Module instance ID that the control command is directed to"                                     },
 };
 size_t num_options = end(options) - begin(options);
 
@@ -162,6 +163,30 @@ uint8_t get_band_option(int * argc, char ** argv)
         else
         {
             cerr << "No band index provided after the --band option. Provide either 0 or 1" << endl;
+            exit(HOST_APP_ERROR);
+        }
+    }
+}
+
+uint8_t get_instance_id(int * argc, char ** argv)
+{
+    opt_t *band_opt = option_lookup("--instance-id");
+    size_t index = argv_option_lookup(*argc, argv, band_opt);
+    if (index == 0) // --instance-id not provided. Use the one in command map.
+    {
+        return INVALID_INSTANCE_ID;
+    }
+    else
+    {
+        if (isdigit(argv[index+1][0])) // Get the actual index that follows the --instance-id option
+        {
+            int instance = atoi(argv[index+1]);
+            remove_opt(argc, argv, index, 2);
+            return instance;
+        }
+        else
+        {
+            cerr << "No instance ID provided after the --instance-id option." << endl;
             exit(HOST_APP_ERROR);
         }
     }

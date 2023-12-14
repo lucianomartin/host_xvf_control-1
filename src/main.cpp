@@ -5,6 +5,7 @@
 
 using namespace std;
 
+uint8_t instance_id;
 int main(int argc, char ** argv)
 {
     if(argc == 1)
@@ -19,6 +20,9 @@ int main(int argc, char ** argv)
     bool bypass_range_check = get_bypass_range_check(&argc, argv);
 
     uint8_t band_index = get_band_option(&argc, argv); // band_index can be present anywhere on the cmd line. Get it first
+    instance_id = get_instance_id(&argc, argv); // instanceID can be present anywhere on the cmd line. Get it first
+
+    //printf("Instance ID = %d\n", instance_id);
 
     opt_t * opt = nullptr;
     int cmd_indx = 1;
@@ -54,8 +58,8 @@ int main(int argc, char ** argv)
     dl_handle_t device_handle = get_dynamic_lib(device_dl_path);
     int * device_init_info = get_device_init_info(cmd_map_handle, device_dl_name);
 
-    print_args_fptr print_args = get_print_args_fptr(cmd_map_handle);
-    check_range_fptr check_range = get_check_range_fptr(cmd_map_handle);
+    //print_args_fptr print_args = get_print_args_fptr(cmd_map_handle);
+    //check_range_fptr check_range = get_check_range_fptr(cmd_map_handle);
     device_fptr make_dev = get_device_fptr(device_handle);
     Device * device = make_dev(device_init_info);
 
