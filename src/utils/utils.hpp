@@ -285,4 +285,6 @@ size_t get_term_width();
 */
 bool check_if_cmd_exists(const std::string cmd_name);
 
+void print_read_result(cmd_t cmd, cmd_param_t *cmd_values);
+
 #endif

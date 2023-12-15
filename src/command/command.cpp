@@ -2,13 +2,11 @@
 // This Software is subject to the terms of the XCORE VocalFusion Licence.
 
 #include "command.hpp"
-#include <iomanip>
-#include <cmath>
 
 using namespace std;
 
-Command::Command(Device * _dev, bool _bypass_range, dl_handle_t _handle) :
-    device(_dev), bypass_range_check(_bypass_range)
+Command::Command(Device * _dev, bool _bypass_range, dl_handle_t _handle, uint8_t _instance_id) :
+    device(_dev), bypass_range_check(_bypass_range), instance_id(_instance_id)
 {
     //print_args = get_print_args_fptr(_handle);
     //check_range = get_check_range_fptr(_handle);
@@ -20,40 +18,12 @@ Command::Command(Device * _dev, bool _bypass_range, dl_handle_t _handle) :
     }
 }
 
-void print_arg_local(const cmd_param_type_t type, const cmd_param_t val)
-{
-    switch(type)
-    {
-    case TYPE_CHAR:
-        std::cout << static_cast<char>(val.ui8);
-        break;
-    case TYPE_UINT8:
-        std::cout << static_cast<int>(val.ui8) << " ";
-        break;
-    case TYPE_FLOAT:
-        std::cout << std::setprecision(7) << val.f << " ";
-        break;
-    case TYPE_RADIANS:
-        std::cout << std::setprecision(5) << std::fixed << val.f << std::setprecision(2) << std::fixed << " (" << val.f  * 180.0f / M_PI << " deg)" << " ";
-        break;
-    case TYPE_INT32:
-        std::cout << val.i32 << " ";
-        break;
-    case TYPE_UINT32:
-        std::cout << val.ui32 << " ";
-        break;
-    default:
-        std::cerr << "Unsupported parameter type" << std::endl;
-        exit(-1);
-    }
-}
-
 void Command::init_cmd_info(const string cmd_name)
 {
     init_cmd(&cmd, cmd_name);
 }
 
-extern uint8_t instance_id;
+
 control_ret_t Command::command_get(cmd_param_t * values)
 {
     control_cmd_t cmd_id = cmd.cmd_id | 0x80; // setting 8th bit for read commands
@@ -61,7 +31,7 @@ control_ret_t Command::command_get(cmd_param_t * values)
     size_t data_len = get_num_bytes_from_type(cmd.type) * cmd.num_values + 1; // one extra for the status
     uint8_t * data = new uint8_t[data_len];
 
-    control_ret_t ret = device->device_get(instance_id, cmd_id, data, data_len);
+    control_ret_t ret = device->device_get(this->instance_id, cmd_id, data, data_len);
     int read_attempts = 1;
 
     while(1)
@@ -111,7 +81,7 @@ control_ret_t Command::command_set(const cmd_param_t * values)
         command_bytes_from_value(cmd.type, data, i, values[i]);
     }
 
-    control_ret_t ret = device->device_set(instance_id, cmd.cmd_id, data, data_len);
+    control_ret_t ret = device->device_set(this->instance_id, cmd.cmd_id, data, data_len);
     int write_attempts = 1;
 
     while(1)
@@ -128,7 +98,7 @@ control_ret_t Command::command_set(const cmd_param_t * values)
         }
         else if(ret == SERVICER_COMMAND_RETRY)
         {
-            ret = device->device_set(instance_id, cmd.cmd_id, data, data_len);
+            ret = device->device_set(this->instance_id, cmd.cmd_id, data, data_len);
             write_attempts++;
         }
         else
@@ -206,38 +176,7 @@ control_ret_t Command::do_command(const string cmd_name, char ** argv, int argc,
     if(args_left == 0) // READ
     {
         ret = command_get(cmd_values);
-        //print_args(cmd.cmd_name, cmd_values);
-
-        for(int i=0; i<cmd.num_values; i++)
-        {
-            cmd_param_type_t type = cmd.type;
-            cmd_param_t val = cmd_values[i];
-            switch(type)
-            {
-            case TYPE_CHAR:
-                std::cout << static_cast<char>(val.ui8);
-                break;
-            case TYPE_UINT8:
-                std::cout << static_cast<int>(val.ui8) << " ";
-                break;
-            case TYPE_FLOAT:
-                std::cout << std::setprecision(7) << val.f << " ";
-                break;
-            case TYPE_RADIANS:
-                std::cout << std::setprecision(5) << std::fixed << val.f << std::setprecision(2) << std::fixed << " (" << val.f  * 180.0f / M_PI << " deg)" << " ";
-                break;
-            case TYPE_INT32:
-                std::cout << val.i32 << " ";
-                break;
-            case TYPE_UINT32:
-                std::cout << val.ui32 << " ";
-                break;
-            default:
-                std::cerr << "Unsupported parameter type" << std::endl;
-                exit(-1);
-            }
-            std::cout << std::endl;
-        }
+        print_read_result(cmd, cmd_values);
     }
     else // WRITE
     {

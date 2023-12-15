@@ -24,26 +24,28 @@ class Command
 
         /** @brief Pointer to the super_print_arg() function from the command_map shared object */
         print_args_fptr print_args;
-        
+
         /** @brief Pointer to the check_range() function from the command_map shared object */
         check_range_fptr check_range;
+
+        uint8_t instance_id;
 
     public:
 
         /**
          * @brief Construct a new Command object.
-         * 
+         *
          * Will initialise a host (master) interface.
-         * 
+         *
          * @param _dev          Pointer to the Device class object
          * @param _bypass_range Bypass range check state
          * @param _handle       Command map dl handle
          */
-        Command(Device * _dev, bool _bypass_range, dl_handle_t _handle);
-        
+        Command(Device * _dev, bool _bypass_range, dl_handle_t _handle, uint8_t _instance_id);
+
         /**
          * @brief Initialise command information
-         * 
+         *
          * @param cmd_name      The command name to be executed
          * @note This has to be used if using command_get() or command_set()
          */
@@ -51,7 +53,7 @@ class Command
 
         /**
          * @brief Takes argv and executes a single command from it
-         * 
+         *
          * @param cmd_name      The command name to be executed
          * @param argv          Pointer to command line arguments
          * @param argc          Number of arguments in command line
@@ -61,14 +63,14 @@ class Command
 
         /**
          * @brief Executes a single get comamnd
-         * 
+         *
          * @param values        Pointer to store values read from the device
          */
         control_ret_t command_get(cmd_param_t * values);
 
         /**
          * @brief Executes a single set command
-         * 
+         *
          * @param values        Pointer to store values to write to the device
          */
         control_ret_t command_set(const cmd_param_t * values);
@@ -78,7 +80,7 @@ class Command
          *
          * This function sends a read command to the device and returns the error
          * returned from the device.
-         * 
+         *
          * @param data          Byte array containing the read command
          * @param payload_len   Length of the byte stream to write to the device
          * @note                Only for internal testing.
