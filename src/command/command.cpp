@@ -52,7 +52,7 @@ control_ret_t Command::command_get(cmd_param_t * values)
         }
         else if(data[0] == SERVICER_COMMAND_RETRY)
         {
-            ret = device->device_get(cmd.res_id, cmd_id, data, data_len);
+            ret = device->device_get(this->instance_id, cmd_id, data, data_len);
             read_attempts++;
         }
         else
