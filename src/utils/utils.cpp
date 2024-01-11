@@ -1,6 +1,8 @@
 // Copyright 2022-2023 XMOS LIMITED.
 // This Software is subject to the terms of the XCORE VocalFusion Licence.
 
+#define _USE_MATH_DEFINES  // required for windows in order for cmath to expose M_PI
+
 #include "utils.hpp"
 #include <vector>
 #include <iomanip>
@@ -344,7 +346,7 @@ int Levenshtein_distance(const string source, const string target)
 
 void print_read_result(cmd_t cmd, cmd_param_t *cmd_values)
 {
-    for(int i=0; i<cmd.num_values; i++)
+    for(unsigned i=0; i<cmd.num_values; i++)
     {
         cmd_param_type_t type = cmd.type;
         cmd_param_t val = cmd_values[i];
