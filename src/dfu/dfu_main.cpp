@@ -57,7 +57,7 @@ using namespace std;
 #define DFU_ALT_UPGRADE_ID 1
 
 /** @brief Number of bytes used to indicate the length of the transfer block length */
-#define DFU_TRANSFER_BLOCK_LENGTH_BYTES 1
+#define DFU_TRANSFER_BLOCK_LENGTH_BYTES 2
 
 /** @brief Invalid value for transport block number */
 #define INVALID_TRANSPORT_BLOCK_NUM 0xFFFF
