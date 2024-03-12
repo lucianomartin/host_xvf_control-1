@@ -51,6 +51,10 @@ int * get_device_init_info(dl_handle_t handle, string lib_name)
     {
         symbol = "get_info_usb";
     }
+    else if(lib_name == device_xscope_dl_name)
+    {
+        symbol = "get_info_xscope";
+    }
     else
     {
         cerr << "Not a valid device dl name " << lib_name << endl;

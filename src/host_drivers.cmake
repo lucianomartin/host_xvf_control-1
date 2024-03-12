@@ -55,7 +55,7 @@ target_include_directories(device_i2c
         ${DEVICE_CONTROL_PATH}/host
 )
 target_link_libraries(device_i2c
-    PUBLIC  
+    PUBLIC
         rtos::sw_services::device_control_host_i2c
 )
 target_link_options(device_i2c PRIVATE -fPIC)
@@ -73,7 +73,7 @@ target_include_directories(device_spi
         ${DEVICE_CONTROL_PATH}/host
 )
 target_link_libraries(device_spi
-    PUBLIC  
+    PUBLIC
         rtos::sw_services::device_control_host_spi
 )
 target_link_libraries(device_spi PRIVATE -fPIC)
@@ -145,7 +145,7 @@ target_link_libraries(device_usb PRIVATE -fPIC)
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     add_custom_command(
         TARGET device_usb
-        POST_BUILD 
+        POST_BUILD
         COMMAND ${CMAKE_INSTALL_NAME_TOOL} -change "/usr/local/lib/libusb-1.0.0.dylib" "@executable_path/libusb-1.0.0.dylib" ${CMAKE_BINARY_DIR}/"libdevice_usb.dylib"
     )
     add_custom_command(
@@ -154,3 +154,44 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
         COMMAND ${CMAKE_COMMAND} -E copy ${DEVICE_CONTROL_PATH}/host/libusb/OSX64/libusb-1.0.0.dylib ${CMAKE_BINARY_DIR}
     )
 endif()
+
+# Build device_control_host for XSCOPE
+add_library(framework_rtos_sw_services_device_control_host_xscope INTERFACE)
+target_sources(framework_rtos_sw_services_device_control_host_xscope
+    INTERFACE
+        ${DEVICE_CONTROL_PATH}/host/util.c
+        ${DEVICE_CONTROL_PATH}/host/device_access_xscope.c
+)
+target_include_directories(framework_rtos_sw_services_device_control_host_xscope
+    INTERFACE
+        ${DEVICE_CONTROL_PATH}/api
+        ${DEVICE_CONTROL_PATH}/host
+        $ENV{XMOS_TOOL_PATH}/include
+)
+
+find_library(XSCOPE_ENDPOINT_LIB NAMES xscope_endpoint.so xscope_endpoint.lib
+                                 PATHS $ENV{XMOS_TOOL_PATH}/lib)
+
+target_link_libraries(framework_rtos_sw_services_device_control_host_xscope INTERFACE ${XSCOPE_ENDPOINT_LIB})
+
+target_compile_definitions(framework_rtos_sw_services_device_control_host_xscope INTERFACE USE_XSCOPE=1)
+add_library(rtos::sw_services::device_control_host_xscope ALIAS framework_rtos_sw_services_device_control_host_xscope)
+
+# Build a wrapper driver for xscope
+
+add_library(device_xscope SHARED)
+target_sources(device_xscope
+    PRIVATE
+        ${CMAKE_CURRENT_LIST_DIR}/device/device_xscope.cpp
+)
+target_include_directories(device_xscope
+    PUBLIC
+        ${CMAKE_CURRENT_LIST_DIR}/device
+        ${DEVICE_CONTROL_PATH}/host
+)
+target_link_libraries(device_xscope
+    PUBLIC
+        rtos::sw_services::device_control_host_xscope
+)
+target_link_libraries(device_xscope PRIVATE -fPIC)
+

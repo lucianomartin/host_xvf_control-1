@@ -112,6 +112,10 @@ string get_device_lib_name(int * argc, char ** argv)
         {
             lib_name = device_usb_dl_name;
         }
+        else if (to_upper(protocol_name) == "XSCOPE")
+        {
+            lib_name = device_xscope_dl_name;
+        }
         else
         {
             // Using I2C by default for now as USB is currently not supported
