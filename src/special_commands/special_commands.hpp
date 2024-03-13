@@ -128,4 +128,6 @@ control_ret_t test_control_interface(Command * command, const std::string filena
  */
 control_ret_t test_bytestream(Command * command, const std::string in_filename);
 
+std::string get_device_host_arg(int * argc, char ** argv, std::string lib_name);
+
 #endif

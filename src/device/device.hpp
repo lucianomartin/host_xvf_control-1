@@ -19,9 +19,11 @@ class Device
         /** @brief Information to intialise the device */
         int * device_info;
 
+    protected:
+
         /**
          * @brief State of the device.
-         * 
+         *
          * Used to prevent multiple initialisations / cleanups.
          */
         bool device_initialised = false;
@@ -30,7 +32,7 @@ class Device
 
         /**
          * @brief Construct a new Device object
-         * 
+         *
          * @param device_info   Pointer to the information to initialise a device
          */
         Device(int * device_info);
@@ -40,7 +42,7 @@ class Device
 
         /**
          * @brief Request to read from a controllable resource inside the device
-         * 
+         *
          * @param res_id        Resource ID
          * @param cmd_id        Command ID
          * @param payload       Array of bytes which constitutes the data payload
@@ -50,7 +52,7 @@ class Device
 
         /**
          * @brief Request to write to a controllable resource inside the device
-         * 
+         *
          * @param res_id        Resource ID
          * @param cmd_id        Command ID
          * @param payload       Array of bytes which constitutes the data payload
@@ -60,7 +62,7 @@ class Device
 
         /**
          * @brief Destroy the Device object.
-         * 
+         *
          * This will shut down the host interface connection.
          */
         virtual ~Device();
@@ -69,9 +71,9 @@ class Device
 extern "C"
 /**
  * @brief Returns a pointer to the Device class object
- * 
+ *
  * @param info      Pointer to the information to initialise a device
  */
-Device * make_Dev(int * info);
+Device * make_Dev(int * info, int * host_arg_info);
 
 #endif

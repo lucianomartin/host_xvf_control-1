@@ -3,6 +3,7 @@
 
 #include "device.hpp"
 #include "device_control_host.h"
+#include "device_xscope.hpp"
 
 using namespace std;
 
@@ -14,9 +15,16 @@ Device::Device(int * info)
 control_ret_t Device::device_init()
 {
     control_ret_t ret = CONTROL_SUCCESS;
+    return ret;
+}
+
+
+control_ret_t XSCOPE_Device::device_init()
+{
+    control_ret_t ret = CONTROL_SUCCESS;
     if(!device_initialised)
     {
-        ret = control_init_xscope("localhost", "12345");
+        ret = control_init_xscope("localhost", (to_string(port_num)).c_str());
         device_initialised = true;
     }
     return ret;
@@ -44,8 +52,8 @@ Device::~Device()
 }
 
 extern "C"
-Device * make_Dev(int * info)
+Device * make_Dev(int * info, int * host_arg_info)
 {
-    static Device dev_obj(info);
+    static XSCOPE_Device dev_obj(info, *host_arg_info);
     return &dev_obj;
 }

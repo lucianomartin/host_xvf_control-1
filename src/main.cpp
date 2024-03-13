@@ -58,7 +58,11 @@ int main(int argc, char ** argv)
     //print_args_fptr print_args = get_print_args_fptr(cmd_map_handle);
     //check_range_fptr check_range = get_check_range_fptr(cmd_map_handle);
     device_fptr make_dev = get_device_fptr(device_handle);
-    Device * device = make_dev(device_init_info);
+
+    string device_host_str = get_device_host_arg(&argc, argv, device_dl_name);
+    int temp = atoi(device_host_str.c_str());
+
+    Device * device = make_dev(device_init_info, &temp);
 
     Command command(device, bypass_range_check, cmd_map_handle, instance_id);
 

@@ -128,7 +128,7 @@ Device::~Device()
 }
 
 extern "C"
-Device * make_Dev(int * info)
+Device * make_Dev(int * info, int * host_arg_info)
 {
     static Device dev_obj(info);
     return &dev_obj;

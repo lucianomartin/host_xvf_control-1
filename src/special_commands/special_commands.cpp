@@ -29,6 +29,7 @@ opt_t options[] = {
     {"--test-bytestream",         "-tb",       "test device by writing a user defined stream of bytes to it"                                    },
     {"--band",                    "-b",        "NL model band to set/get (0: low-band, 1: high-band), default is 0 if unspecified"              },
     {"--instance-id",             "-i",        "Module instance ID that the control command is directed to"                                     },
+    {"--port",                    "-p",        "port number on which to connect to the device when doing control over xscope"}
 };
 size_t num_options = end(options) - begin(options);
 
@@ -124,6 +125,30 @@ string get_device_lib_name(int * argc, char ** argv)
         }
         remove_opt(argc, argv, index, 2);
         return lib_name;
+    }
+}
+
+string get_device_host_arg(int * argc, char ** argv, string lib_name)
+{
+    if(lib_name == device_xscope_dl_name)
+    {
+        opt_t * use_opt = option_lookup("--port");
+        size_t index_port = argv_option_lookup(*argc, argv, use_opt);
+        if(index_port == 0)
+        {
+            cerr << "No port specified when doing control over xscope. Provide the port number using the --port option." << endl;
+            exit(HOST_APP_ERROR);
+        }
+        else
+        {
+            string port_num = argv[index_port + 1];
+            remove_opt(argc, argv, index_port, 2);
+            return port_num;
+        }
+    }
+    else
+    {
+        return NULL;
     }
 }
 
