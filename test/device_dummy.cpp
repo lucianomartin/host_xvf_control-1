@@ -4,6 +4,7 @@
 #include "device.hpp"
 #include <cstring>
 #include <fstream>
+#include <vector>
 
 #define NUM_CHARS 20 // This number is defined in command_map_dummy.cpp
 
@@ -128,7 +129,7 @@ Device::~Device()
 }
 
 extern "C"
-Device * make_Dev(int * info, int * host_arg_info)
+Device * make_Dev(int * info, vector<string> vec)
 {
     static Device dev_obj(info);
     return &dev_obj;

@@ -6,7 +6,7 @@
 class XSCOPE_Device : public Device
 {
     public :
-    XSCOPE_Device(int *device_info, int port_num)
+    XSCOPE_Device(int *device_info, std::string port_num)
     : Device(device_info)
     , port_num(port_num)
     {
@@ -14,6 +14,6 @@ class XSCOPE_Device : public Device
 
     public:
         control_ret_t device_init();
-        int port_num;
+        std::string port_num;
 };
 #endif

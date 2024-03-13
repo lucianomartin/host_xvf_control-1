@@ -59,10 +59,9 @@ int main(int argc, char ** argv)
     //check_range_fptr check_range = get_check_range_fptr(cmd_map_handle);
     device_fptr make_dev = get_device_fptr(device_handle);
 
-    string device_host_str = get_device_host_arg(&argc, argv, device_dl_name);
-    int temp = atoi(device_host_str.c_str());
+    vector<string> device_host_args = get_device_host_arg(&argc, argv, device_dl_name); // Device related args that are passed through the command line on the host. For example, --port for control over xscope
 
-    Device * device = make_dev(device_init_info, &temp);
+    Device * device = make_dev(device_init_info, device_host_args);
 
     Command command(device, bypass_range_check, cmd_map_handle, instance_id);
 

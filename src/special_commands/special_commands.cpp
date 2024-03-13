@@ -128,7 +128,7 @@ string get_device_lib_name(int * argc, char ** argv)
     }
 }
 
-string get_device_host_arg(int * argc, char ** argv, string lib_name)
+vector<string> get_device_host_arg(int * argc, char ** argv, string lib_name)
 {
     if(lib_name == device_xscope_dl_name)
     {
@@ -143,12 +143,14 @@ string get_device_host_arg(int * argc, char ** argv, string lib_name)
         {
             string port_num = argv[index_port + 1];
             remove_opt(argc, argv, index_port, 2);
-            return port_num;
+            vector<string> v = {port_num};
+            return v;
         }
     }
     else
     {
-        return NULL;
+        vector<string> v;
+        return v;
     }
 }
 

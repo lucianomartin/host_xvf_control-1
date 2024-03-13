@@ -164,7 +164,7 @@ using cmd_info_fptr = std::string (*)(const size_t);
 using cmd_hidden_fptr = bool (*)(const size_t);
 
 /** Function pointer that takes void * and returns Device */
-using device_fptr = Device * (*)(int *, int *);
+using device_fptr = Device * (*)(int *, std::vector<std::string>);
 
 /** Function pointer for getting the information to initialise a device */
 using device_info_fptr = int * (*)();

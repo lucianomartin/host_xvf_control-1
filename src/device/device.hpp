@@ -8,6 +8,7 @@ extern "C"
 #include "device_control_shared.h"
 #include <memory>
 #include <iostream>
+#include <vector>
 
 /**
  * @brief Class for interfacing device_contol
@@ -74,6 +75,6 @@ extern "C"
  *
  * @param info      Pointer to the information to initialise a device
  */
-Device * make_Dev(int * info, int * host_arg_info);
+Device * make_Dev(int * info, std::vector<std::string> vec);
 
 #endif
