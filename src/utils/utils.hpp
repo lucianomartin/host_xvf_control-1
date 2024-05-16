@@ -93,7 +93,7 @@ const std::string default_command_map_name = "command_map";
  *
  * @note This will have to be manually changed after the release
  */
-const std::string current_host_app_version = "2.0.1";
+const std::string current_host_app_version = "0.1.0";
 
 /** @brief Convert string to uper case */
 std::string to_upper(std::string str);
@@ -160,9 +160,6 @@ using cmd_val_info_fptr = void (*)(cmd_param_type_t *, cmd_rw_t *, unsigned *, c
 /** Function pointer for getting cmd info */
 using cmd_info_fptr = std::string (*)(const size_t);
 
-/** Function pointer for getting cmd hidden status */
-using cmd_hidden_fptr = bool (*)(const size_t);
-
 /** Function pointer that takes void * and returns Device */
 using device_fptr = Device * (*)(int *, std::vector<std::string>);
 
@@ -218,13 +215,6 @@ cmd_val_info_fptr get_cmd_val_info_fptr(dl_handle_t handle);
 cmd_info_fptr get_cmd_info_fptr(dl_handle_t handle);
 
 /**
- * @brief Get the function pointer to get_cmd_hidden()
- *
- * @param handle Pointer to the command_map shared object
- */
-cmd_hidden_fptr get_cmd_hidden_fptr(dl_handle_t handle);
-
-/**
  * @brief Get the function pointer to make_Dev()
  *
  * @param handle Pointer to the device shared object
@@ -245,13 +235,6 @@ device_info_fptr get_device_info_fptr(dl_handle_t handle, const std::string symb
  * @param handle Pointer to the device shared object
  */
 print_args_fptr get_print_args_fptr(dl_handle_t handle);
-
-/**
- * @brief Get the function pointer to get_range_info()
- *
- * @param handle Pointer to the device shared object
- */
-check_range_fptr get_check_range_fptr(dl_handle_t handle);
 
 /** @brief Get param type name string */
 std::string command_param_type_name(const cmd_param_type_t type);
@@ -278,7 +261,7 @@ cmd_param_t command_bytes_to_value(const cmd_param_type_t type, const uint8_t * 
 void command_bytes_from_value(const cmd_param_type_t type, uint8_t * data, unsigned index, const cmd_param_t value);
 
 /** @brief Find Levenshtein distance for approximate string matching */
-int Levenshtein_distance(const std::string source, const std::string target);
+//int Levenshtein_distance(const std::string source, const std::string target);
 
 /** @brief Get current terminal width */
 size_t get_term_width();

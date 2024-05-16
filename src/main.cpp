@@ -16,9 +16,7 @@ int main(int argc, char ** argv)
 
     string command_map_path = get_cmd_map_abs_path(&argc, argv);
     string device_dl_name = get_device_lib_name(&argc, argv);
-    bool bypass_range_check = get_bypass_range_check(&argc, argv);
 
-    uint8_t band_index = get_band_option(&argc, argv); // band_index can be present anywhere on the cmd line. Get it first
     uint8_t instance_id = get_instance_id(&argc, argv); // instanceID can be present anywhere on the cmd line. Get it first
 
     opt_t * opt = nullptr;
@@ -63,7 +61,7 @@ int main(int argc, char ** argv)
 
     Device * device = make_dev(device_init_info, device_host_args);
 
-    Command command(device, bypass_range_check, cmd_map_handle, instance_id);
+    Command command(device, cmd_map_handle, instance_id);
 
     int arg_indx = cmd_indx + 1;
     next_cmd = argv[cmd_indx];
@@ -76,6 +74,7 @@ int main(int argc, char ** argv)
     {
         // This assumes that the next_cmd has not been reassigned
         // Hence opt holds the same option pointer
+        /*
         if(opt->long_name == "--dump-params")
         {
             return dump_params(&command);
@@ -142,7 +141,7 @@ int main(int argc, char ** argv)
         if(opt->long_name == "--test-bytestream")
         {
             return test_bytestream(&command, argv[arg_indx]);
-        }
+        }*/
     }
     // Program should NEVER get to this point
     cout << "Host application behaved unexpectedly, please report this issue" << endl;

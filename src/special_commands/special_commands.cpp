@@ -18,16 +18,6 @@ opt_t options[] = {
     {"--list-commands",           "-l",        "print list of the available commands"                                                           },
     {"--use",                     "-u",        "use specific hardware protocol, I2C, SPI and USB are available to use"                          },
     {"--command-map-path",        "-cmp",      "use specific command map path, the path is relative to the working dir"                         },
-    {"--bypass-range-check",      "-br",       "bypass parameter range check",                                                                  },
-    {"--dump-params",             "-d",        "print all readable parameters"                                                                  },
-    {"--execute-command-list",    "-e",        "execute commands from .txt file, one command per line, don't need -u * in the .txt file"        },
-    {"--get-aec-filter",          "-gf",       "get AEC filter into .bin files, default is aec_filter.bin.fx.mx"                                },
-    {"--set-aec-filter",          "-sf",       "set AEC filter from .bin files, default is aec_filter.bin.fx.mx"                                },
-    {"--get-nlmodel-buffer",      "-gn",       "get NLModel filter into .bin file, default is nlm_buffer.bin"                                   },
-    {"--set-nlmodel-buffer",      "-sn",       "set NLModel filter from .bin file, default is nlm_buffer.bin"                                   },
-    {"--test-control-interface",  "-tc",       "test control interface, default is test_buffer.bin"                                             },
-    {"--test-bytestream",         "-tb",       "test device by writing a user defined stream of bytes to it"                                    },
-    {"--band",                    "-b",        "NL model band to set/get (0: low-band, 1: high-band), default is 0 if unspecified"              },
     {"--instance-id",             "-i",        "Module instance ID that the control command is directed to"                                     },
     {"--port",                    "-p",        "port number on which to connect to the device when doing control over xscope"}
 };
@@ -66,7 +56,7 @@ opt_t * option_lookup(const string str)
             return opt;
         }
     }
-
+    /*
     int shortest_dist = 100;
     int indx  = 0;
     for(size_t i = 0; i < num_options; i++)
@@ -81,9 +71,10 @@ opt_t * option_lookup(const string str)
             indx = i;
         }
     }
-    cerr << "Option " << str << " does not exist." << endl
-    << "Maybe you meant " << options[indx].short_name
-    << " or " << options[indx].long_name << "." << endl;
+    */
+    cerr << "Option " << str << " does not exist." << endl;
+    //<< "Maybe you meant " << options[indx].short_name
+    //<< " or " << options[indx].long_name << "." << endl;
     exit(HOST_APP_ERROR);
     return nullptr;
 }
@@ -154,51 +145,6 @@ vector<string> get_device_host_arg(int * argc, char ** argv, string lib_name)
     }
 }
 
-bool get_bypass_range_check(int * argc, char ** argv)
-{
-    opt_t * bp_opt = option_lookup("--bypass-range-check");
-    size_t index = argv_option_lookup(*argc, argv, bp_opt);
-    if(index == 0)
-    {
-        // if option is not present bypass is false
-        return false;
-    }
-    else
-    {
-        remove_opt(argc, argv, index, 1);
-        return true;
-    }
-}
-
-uint8_t get_band_option(int * argc, char ** argv)
-{
-    opt_t *band_opt = option_lookup("--band");
-    size_t index = argv_option_lookup(*argc, argv, band_opt);
-    if (index == 0) // --band not provided. Default to band 0
-    {
-        return 0;
-    }
-    else
-    {
-        if (isdigit(argv[index+1][0])) // Get the actual band index that follows the --band option
-        {
-            int band = atoi(argv[index+1]);
-            if((band != 0) && (band != 1))
-            {
-                cerr << "Invalid band index provided after the --band option. Provide either 0 or 1" << endl;
-                exit(HOST_APP_ERROR);
-            }
-            remove_opt(argc, argv, index, 2);
-            return band;
-        }
-        else
-        {
-            cerr << "No band index provided after the --band option. Provide either 0 or 1" << endl;
-            exit(HOST_APP_ERROR);
-        }
-    }
-}
-
 uint8_t get_instance_id(int * argc, char ** argv)
 {
     opt_t *band_opt = option_lookup("--instance-id");
@@ -246,9 +192,7 @@ control_ret_t print_help_menu()
     << endl << "You can use --use or -u option to specify protocol you want to use"
     << endl << "or call the option/command directly using default control protocol."
     << endl << "Default control protocol is USB."
-    << endl << "You can use --bypass-range-check or -br to bypass parameter range checking."
-    << endl << "Range check is True unless -br is specified."
-    << endl << "You can use --command-map-path or -cmp to specify the comand_map object to use."
+    << endl << "You can use --command-map-path or -cmp to specify the command_map object to use."
     << endl << endl << "Options:" << endl;
     for(opt_t opt : options)
     {
@@ -362,189 +306,4 @@ control_ret_t print_command_list()
         cout << endl << endl;
     }
     return CONTROL_SUCCESS;
-}
-
-control_ret_t dump_params(Command * command)
-{
-    for(size_t i = 0; i < num_commands; i ++)
-    {
-        cmd_t cmd = {0};
-        init_cmd(&cmd, "_", i);
-        // skipping hidden commands
-        if(cmd.hidden_cmd)
-        {
-            continue;
-        }
-        if(cmd.rw != CMD_WO)
-        {
-            command->do_command(cmd.cmd_name, nullptr, 0, 0);
-        }
-    }
-    return CONTROL_SUCCESS;
-}
-
-control_ret_t execute_cmd_list(Command * command, const string filename)
-{
-    size_t largest_command = 0;
-    for(size_t i = 0; i < num_commands; i++)
-    {
-        cmd_t cmd = {0};
-        init_cmd(&cmd, "_", i);
-        size_t num_args = cmd.num_values;
-        largest_command = (num_args > largest_command) ? num_args : largest_command;
-    }
-    largest_command++; // +1 for the command name
-    ifstream file(filename, ios::in);
-    if(!file)
-    {
-        cerr << "Could not open a file " << filename << endl;
-        exit(HOST_APP_ERROR);
-    }
-    string line;
-    while(getline(file, line))
-    {
-        // TODO: think about -e use cases whether 128 bytes per line is enough
-        const size_t max_line_len = 128;
-        char buff[max_line_len];
-        int i = 0;
-
-        char ** line_ch = new char * [largest_command];
-        int num = 0;
-        stringstream ss(line);
-        string word;
-        // if newline
-        if(ss.peek() == -1)
-        {
-            continue;
-        }
-        while(ss >> word)
-        {
-            memcpy(&buff[i], word.c_str(), word.length());
-            buff[i + word.length()] = '\0';
-            line_ch[num] = &buff[i];
-            i += word.length() + 2;
-            if(i > max_line_len)
-            {
-                cerr << "Line:" << endl << line
-                << endl << "Exceeded " << max_line_len
-                << " characters limit" << endl;
-                return CONTROL_BAD_COMMAND;
-            }
-            num++;
-        }
-        int cmd_indx = 0;
-        int arg_indx =  cmd_indx + 1; // 0 is the command
-        command->do_command(line_ch[cmd_indx], line_ch, num, arg_indx);
-        delete []line_ch;
-    }
-    file.close();
-    return CONTROL_SUCCESS;
-}
-
-control_ret_t test_bytestream(Command * command, const string in_filename)
-{
-    control_ret_t ret;
-    ifstream rf(in_filename, ios::in | ios::binary);
-    if(!rf)
-    {
-        cerr << "Could not open a file " << in_filename << endl;
-        exit(HOST_APP_ERROR);
-    }
-    rf.seekg (0, rf.end);
-    size_t size = (size_t) rf.tellg();
-    rf.seekg (0, rf.beg);
-
-    uint8_t *data = new uint8_t[size];
-    for(unsigned int i=0; i<size; i++)
-    {
-        rf.read(reinterpret_cast<char *>(&data[i]), sizeof(uint8_t));
-    }
-
-    if((size >= 2) && (data[1] & 0x80)) // Read command
-    {
-        ret = command->command_get_low_level(data, size);
-    }
-    else
-    {
-        ret = command->command_set_low_level(data, size);
-    }
-
-    delete []data;
-
-    return ret;
-}
-
-control_ret_t test_control_interface(Command * command, const string out_filename)
-{
-    control_ret_t  ret = CONTROL_ERROR;
-    int test_frames = 50;
-
-    const string test_cmd_name = "TEST_CONTROL";
-    cmd_t test_cmd = {0};
-    init_cmd(&test_cmd, test_cmd_name);
-    cmd_param_t * test_in_buffer = new cmd_param_t[test_cmd.num_values * test_frames];
-    cmd_param_t * test_out_buffer = new cmd_param_t[test_cmd.num_values * test_frames];
-    size_t num_all_vals = test_frames * test_cmd.num_values;
-
-    string in_filename = "test_input_buf.bin";
-    ifstream rf(in_filename, ios::out | ios::binary);
-    if(!rf)
-    {
-        cerr << "Could not open a file " << in_filename << endl;
-        exit(HOST_APP_ERROR);
-    }
-
-    rf.seekg (0, rf.end);
-    streamoff size = rf.tellg();
-    rf.seekg (0, rf.beg);
-
-    if(size != (num_all_vals * sizeof(uint8_t)))
-    {
-        cerr << "Test buffer lengths don't match" << endl;
-        exit(HOST_APP_ERROR);
-    }
-
-    for(size_t i = 0; i < num_all_vals; i++)
-    {
-        rf.read(reinterpret_cast<char *>(&test_in_buffer[i].ui8), sizeof(uint8_t));
-    }
-
-    rf.peek(); // doing peek here to look for a character beyond file size so it will set eof
-    rf.close();
-
-    if(!rf.eof() || rf.bad())
-    {
-        cerr << "Error occured while reading " << in_filename << endl;
-        exit(HOST_APP_ERROR);
-    }
-    command->init_cmd_info(test_cmd_name);
-    for(int n = 0; n < test_frames; n++)
-    {
-        ret = command->command_set(&test_in_buffer[n * test_cmd.num_values]);
-
-        ret = command->command_get(&test_out_buffer[n * test_cmd.num_values]);
-    }
-    delete []test_in_buffer;
-
-    cout << "filename is " << out_filename << endl;
-    ofstream wf(out_filename, ios::out | ios::binary);
-    if(!wf)
-    {
-        cerr << "Could not open a file " << out_filename << endl;
-        exit(HOST_APP_ERROR);
-    }
-
-    for(size_t i = 0; i < num_all_vals; i++)
-    {
-        wf.write(reinterpret_cast<char *>(&test_out_buffer[i].ui8), sizeof(uint8_t));
-    }
-    delete []test_out_buffer;
-
-    wf.close();
-    if(wf.bad())
-    {
-        cerr << "Error occured when writing to " << out_filename << endl;
-        exit(HOST_APP_ERROR);
-    }
-    return ret;
 }

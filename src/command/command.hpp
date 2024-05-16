@@ -19,15 +19,6 @@ class Command
         /** @brief Command information */
         cmd_t cmd;
 
-        /** @brief Bypass range check state */
-        bool bypass_range_check;
-
-        /** @brief Pointer to the super_print_arg() function from the command_map shared object */
-        print_args_fptr print_args;
-
-        /** @brief Pointer to the check_range() function from the command_map shared object */
-        check_range_fptr check_range;
-
         uint8_t instance_id;
 
     public:
@@ -38,10 +29,9 @@ class Command
          * Will initialise a host (master) interface.
          *
          * @param _dev          Pointer to the Device class object
-         * @param _bypass_range Bypass range check state
          * @param _handle       Command map dl handle
          */
-        Command(Device * _dev, bool _bypass_range, dl_handle_t _handle, uint8_t _instance_id);
+        Command(Device * _dev, dl_handle_t _handle, uint8_t _instance_id);
 
         /**
          * @brief Initialise command information
@@ -74,30 +64,6 @@ class Command
          * @param values        Pointer to store values to write to the device
          */
         control_ret_t command_set(const cmd_param_t * values);
-
-        /**
-         * @brief Low level get command function.
-         *
-         * This function sends a read command to the device and returns the error
-         * returned from the device.
-         *
-         * @param data          Byte array containing the read command
-         * @param payload_len   Length of the byte stream to write to the device
-         * @note                Only for internal testing.
-         */
-        control_ret_t command_get_low_level(uint8_t *data, size_t payload_len);
-
-        /**
-         * @brief Low level set command function
-         *
-         * This function sends a write command and payload to the device and
-         * returns the error code returned from the device.
-         *
-         * @param cmd           Byte array containing the write command and payload
-         * @param payload_len   Length of the byte stream to write to the device
-         * @note                Only for internal testing
-         */
-        control_ret_t command_set_low_level(uint8_t *data, size_t payload_len);
 };
 
 #endif

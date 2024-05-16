@@ -16,7 +16,6 @@ static cmd_name_fptr get_cmd_name = nullptr;
 static cmd_id_info_fptr get_cmd_id_info = nullptr;
 static cmd_val_info_fptr get_cmd_val_info = nullptr;
 static cmd_info_fptr get_cmd_info = nullptr;
-static cmd_hidden_fptr get_cmd_hidden = nullptr;
 
 size_t num_commands = 0;
 
@@ -79,28 +78,8 @@ dl_handle_t load_command_map_dll(const string cmd_map_abs_path)
     get_cmd_id_info = get_cmd_id_info_fptr(handle);
     get_cmd_val_info = get_cmd_val_info_fptr(handle);
     get_cmd_info = get_cmd_info_fptr(handle);
-    get_cmd_hidden = get_cmd_hidden_fptr(handle);
 
     return handle;
-}
-
-void calc_Levenshtein_and_error(const string str)
-{
-    int shortest_dist = 100;
-    size_t indx  = 0;
-    for(size_t i = 0; i < num_commands; i++)
-    {
-        string comp_name = get_cmd_name(i);
-        int dist = Levenshtein_distance(str, comp_name);
-        if(dist < shortest_dist)
-        {
-            shortest_dist = dist;
-            indx = i;
-        }
-    }
-    cerr << "Command " << str << " does not exist." << endl
-    << "Maybe you meant " << get_cmd_name(indx) <<  "." << endl;
-    exit(HOST_APP_ERROR);
 }
 
 bool check_if_cmd_exists(const string cmd_name)
@@ -121,10 +100,10 @@ void init_cmd(cmd_t * cmd, const std::string cmd_name, size_t index)
     if(index == UINT32_MAX)
     {
         index = get_cmd_index(up_str);
-        if(index == UINT32_MAX)
+        /*if(index == UINT32_MAX)
         {
             calc_Levenshtein_and_error(up_str);
-        }
+        }*/
         cmd->cmd_name = up_str;
     }
     else
@@ -135,7 +114,6 @@ void init_cmd(cmd_t * cmd, const std::string cmd_name, size_t index)
     get_cmd_id_info(&cmd->res_id, &cmd->cmd_id, index);
     get_cmd_val_info(&cmd->type, &cmd->rw, &cmd->num_values, index);
     cmd->info = get_cmd_info(index);
-    cmd->hidden_cmd = get_cmd_hidden(index);
 }
 
 size_t argv_option_lookup(int argc, char ** argv, opt_t * opt_lookup)
@@ -262,90 +240,6 @@ void command_bytes_from_value(const cmd_param_type_t type, uint8_t * data, unsig
         cerr << "Unsupported parameter type" << endl;
         exit(HOST_APP_ERROR);
     }
-}
-
-// Taken from:
-// https://www.talkativeman.com/levenshtein-distance-algorithm-string-comparison/
-int Levenshtein_distance(const string source, const string target)
-{
-
-    const int n = source.length();
-    const int m = target.length();
-    if (n == 0)
-    {
-        return m;
-    }
-    if (m == 0)
-    {
-        return n;
-    }
-
-    typedef vector<vector<int>> Tmatrix;
-
-    Tmatrix matrix(n + 1);
-
-    // Size the vectors in the 2.nd dimension. Unfortunately C++ doesn't
-    // allow for allocation on declaration of 2.nd dimension of vec of vec
-
-    for (int i = 0; i <= n; i++)
-    {
-        matrix[i].resize(m + 1);
-    }
-
-    for (int i = 0; i <= n; i++)
-    {
-        matrix[i][0] = i;
-    }
-
-    for (int j = 0; j <= m; j++)
-    {
-        matrix[0][j] = j;
-    }
-
-    for (int i = 1; i <= n; i++)
-    {
-
-        const char s_i = source[i - 1];
-
-        for (int j = 1; j <= m; j++)
-        {
-
-            const char t_j = target[j - 1];
-
-            int cost;
-            if (s_i == t_j)
-            {
-                cost = 0;
-            }
-            else
-            {
-                cost = 1;
-            }
-
-            const int above = matrix[i - 1][j];
-            const int left = matrix[i][j - 1];
-            const int diag = matrix[i - 1][j - 1];
-            int cell = min( above + 1, min(left + 1, diag + cost));
-
-            // Cover transposition, in addition to deletion,
-            // insertion and substitution. This step is taken from:
-            // Berghel, Hal ; Roach, David : "An Extension of Ukkonen's
-            // Enhanced Dynamic Programming ASM Algorithm"
-            // (http://www.acm.org/~hlb/publications/asm/asm.html)
-
-            if (i > 2 && j > 2)
-            {
-                int trans = matrix[i - 2][j - 2] + 1;
-                if (source[i - 2] != t_j) {trans++;}
-                if (s_i != target[j - 2]) {trans++;}
-                if (cell > trans) {cell = trans;}
-            }
-
-            matrix[i][j] = cell;
-        }
-    }
-
-    return matrix[n][m];
 }
 
 void print_read_result(cmd_t cmd, cmd_param_t *cmd_values)

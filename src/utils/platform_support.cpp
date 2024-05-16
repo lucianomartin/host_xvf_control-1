@@ -20,7 +20,7 @@
 #include <errhandlingapi.h> // GetLastError
 #include <direct.h>         // _getcwd
 #define getcwd _getcwd
-#define PATH_MAX 1000 
+#define PATH_MAX 1000
 #else
 #error "Unknown Operating System"
 #endif
@@ -112,7 +112,7 @@ dl_handle_t get_dynamic_lib(const string lib_path)
         cerr << "Could not load " << lib_path << ", got " << GetLastError() << " error code" << endl;
 #else
 #error "Unknown Operating System"
-#endif // unix vs windows        
+#endif // unix vs windows
         exit(HOST_APP_ERROR);
     }
     return handle;
@@ -171,11 +171,6 @@ cmd_val_info_fptr get_cmd_val_info_fptr(dl_handle_t handle)
 cmd_info_fptr get_cmd_info_fptr(dl_handle_t handle)
 {
     return get_function<cmd_info_fptr>(handle, "get_cmd_info");
-}
-
-cmd_hidden_fptr get_cmd_hidden_fptr(dl_handle_t handle)
-{
-    return get_function<cmd_hidden_fptr>(handle, "get_cmd_hidden");
 }
 
 device_fptr get_device_fptr(dl_handle_t handle)
