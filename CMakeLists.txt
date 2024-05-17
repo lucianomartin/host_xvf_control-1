@@ -23,8 +23,7 @@ set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Only Release mode is allowed" FORCE
 
 project(host_xvf_control)
 
-set(FWK_RTOS ${CMAKE_SOURCE_DIR}/fwk_rtos)
-set(DEVICE_CONTROL_PATH ${FWK_RTOS}/modules/sw_services/device_control)
+set(DEVICE_CONTROL_PATH ${CMAKE_SOURCE_DIR}/device_control)
 
 include(src/host_drivers.cmake)
 include(src/host_application.cmake)
