@@ -8,14 +8,13 @@ set(COMMON_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/utils/types_support.cpp
     ${CMAKE_CURRENT_LIST_DIR}/utils/platform_support.cpp
     ${CMAKE_CURRENT_LIST_DIR}/command/command.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/special_commands/special_commands.cpp
-    # ${CMAKE_CURRENT_LIST_DIR}/special_commands/filters.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/options/options.cpp
 )
 set(COMMON_INCLUDES
     ${CMAKE_CURRENT_LIST_DIR}/utils
     ${CMAKE_CURRENT_LIST_DIR}/device
     ${CMAKE_CURRENT_LIST_DIR}/command
-    ${CMAKE_CURRENT_LIST_DIR}/special_commands
+    ${CMAKE_CURRENT_LIST_DIR}/options
     ${DEVICE_CONTROL_PATH}/api
 )
 

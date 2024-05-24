@@ -1,7 +1,7 @@
 // Copyright 2022-2023 XMOS LIMITED.
 // This Software is subject to the terms of the XCORE VocalFusion Licence.
 
-#include "special_commands.hpp"
+#include "options.hpp"
 #include <fstream>
 #include <iomanip>
 #include <ctype.h>
