@@ -23,12 +23,7 @@ set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Only Release mode is allowed" FORCE
 
 project(host_xvf_control)
 
-set(DEVICE_CONTROL_PATH ${CMAKE_SOURCE_DIR}/device_control)
+set(DEVICE_CONTROL_PATH ${CMAKE_SOURCE_DIR}/src/device_control)
 
 include(src/host_drivers.cmake)
 include(src/host_application.cmake)
-
-if(TESTING)
-    include(src/low_level_test_host_drivers.cmake)
-    add_subdirectory(test)
-endif()

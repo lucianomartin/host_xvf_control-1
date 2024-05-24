@@ -1,9 +1,0 @@
-CHANGELOG.rst
-CMakeLists.txt
-fwk_rtos/modules/sw_services/device_control/api/
-fwk_rtos/modules/sw_services/device_control/CMakeLists.txt
-fwk_rtos/modules/sw_services/device_control/host/
-LICENSE.rst
-README.rst
-requirements.txt
-src/
