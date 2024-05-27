@@ -1,6 +1,6 @@
 # Building main application here
 
-set( APP_NAME  xvf_host )
+set( APP_NAME  dsp_host )
 
 set(COMMON_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/main.cpp
@@ -44,11 +44,11 @@ target_include_directories( ${APP_NAME}
 )
 
 if (NOT ${CMAKE_SYSTEM_NAME} STREQUAL Windows)
-target_link_libraries(xvf_host
+target_link_libraries(dsp_host
     PUBLIC
         dl
 )
-target_link_options(xvf_host
+target_link_options(dsp_host
     PRIVATE
         -rdynamic
 )

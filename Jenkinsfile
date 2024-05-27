@@ -59,7 +59,7 @@ pipeline {
                                 dir('release/build') {
                                     sh 'cmake -S .. -DTESTING=ON && make -j4'
                                     // archive RPI binaries
-                                    sh 'mkdir rpi && cp xvf_host *.so rpi/'
+                                    sh 'mkdir rpi && cp dsp_host *.so rpi/'
                                     archiveArtifacts artifacts: 'rpi/*', fingerprint: true
                                 }
                                 dir('release/fwk_rtos/modules/sw_services/device_control/api') {
@@ -104,7 +104,7 @@ pipeline {
                                 dir('release/build') {
                                     sh 'cmake -S .. -DTESTING=ON && make -j4'
                                     // archive RPI binaries
-                                    sh 'mkdir linux_x86_64 && cp xvf_host *.so linux_x86_64/'
+                                    sh 'mkdir linux_x86_64 && cp dsp_host *.so linux_x86_64/'
                                     archiveArtifacts artifacts: 'linux_x86_64/*', fingerprint: true
                                 }
                             }
@@ -150,7 +150,7 @@ pipeline {
                                 dir('release/build') {
                                     sh 'cmake -S .. -DTESTING=ON && make -j4'
                                     // archive Mac binaries
-                                    sh 'mkdir mac_x86_64 && cp xvf_host *.dylib mac_x86_64/'
+                                    sh 'mkdir mac_x86_64 && cp dsp_host *.dylib mac_x86_64/'
                                     archiveArtifacts artifacts: 'mac_x86_64/*', fingerprint: true
                                 }
                             }
@@ -196,7 +196,7 @@ pipeline {
                                 dir('release/build') {
                                     sh 'cmake -S .. -DTESTING=ON && make -j4'
                                     // archive Mac binaries
-                                    sh 'mkdir mac_arm64 && cp xvf_host *.dylib mac_arm64/'
+                                    sh 'mkdir mac_arm64 && cp dsp_host *.dylib mac_arm64/'
                                     archiveArtifacts artifacts: 'mac_arm64/*', fingerprint: true
                                 }
                             }
@@ -245,7 +245,7 @@ pipeline {
                                         bat 'ninja'
                                     }
                                     // archive Mac binaries
-                                    bat 'mkdir win32 && cp xvf_host.exe *.dll win32/'
+                                    bat 'mkdir win32 && cp dsp_host.exe *.dll win32/'
                                     archiveArtifacts artifacts: 'win32/*', fingerprint: true
                                 }
                             }

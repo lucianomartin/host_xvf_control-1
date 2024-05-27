@@ -27,13 +27,13 @@ def get_dummy_files():
     else:
         assert 0, "Unsupported operating system"
 
-    host_bin = "xvf_host" + bin_suffix
+    host_bin = "dsp_host" + bin_suffix
     cmd_map_so = dl_prefix + "command_map"
     device_so = dl_prefix + "device_"
     local_build_folder = Path(__file__).parents[1] / "build"
-    build_dir = local_build_folder if local_build_folder.is_dir() else Path(__file__).parents[1] / "release"
+    build_dir = local_build_folder if local_build_folder.is_dir() else Path(__file__).parents[1]
     test_dir = build_dir / "test"
-    host_bin_path = build_dir / host_bin 
+    host_bin_path = build_dir / host_bin
     host_bin_copy = test_dir / host_bin
     cmd_map_dummy_path = test_dir / (cmd_map_so + "_dummy" + dl_suffix)
     cmd_map_path = test_dir / (cmd_map_so + dl_suffix)
@@ -66,7 +66,7 @@ def run_cmd(command, cwd, verbose = False, expect_success = True):
         print("returned: ", result.returncode)
         print("stdout: ", result.stdout)
         print("stderr: ", result.stderr)
-    
+
     if expect_success:
         assert not result.returncode
         return result.stdout
@@ -75,7 +75,7 @@ def run_cmd(command, cwd, verbose = False, expect_success = True):
         return result.stderr
 
 def execute_command(host_bin, control_protocol, cwd, cmd_name, cmd_map_path = None, cmd_vals = None, expect_success = True):
-    
+
     command = str(host_bin) + " -u " + control_protocol + " " + cmd_name
     if cmd_map_path:
         print(f"cmd_map_path in execute_command() is {cmd_map_path}")
@@ -88,10 +88,10 @@ def execute_command(host_bin, control_protocol, cwd, cmd_name, cmd_map_path = No
     words = str(stdout, 'utf-8').strip().split(' ')
 
     # This will check that the right command is returned
-    if cmd_name[0] != "-" : 
+    if cmd_name[0] != "-" :
         assert words[0] == cmd_name
 
-        # Second word shuould be the value. Return as string so caller must cast to right type
+        # Second word should be the value. Return as string so caller must cast to right type
         if len(words) == 2: # cmd and 1 value
             return words[1] # To avoid changing all the other tests that call execute_command and expect a single value and not an array
         else:

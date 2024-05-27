@@ -8,7 +8,7 @@ import subprocess
 
 def test_control_ret_str_map():
     pkg_dir = Path(__file__).parent
-    device_control_shared_h = Path(pkg_dir/"../fwk_rtos/modules/sw_services/device_control/api/device_control_shared.h")
+    device_control_shared_h = Path(pkg_dir/"../src/device_control/api/device_control_shared.h")
     assert device_control_shared_h.is_file(), f"Error: {device_control_shared_h} is not a valid file"
     control_ret_dict, control_ret_str_map = parse_control_ret_t.parse_control_ret_t(device_control_shared_h)
     test_file = "src.autogen/test.h"

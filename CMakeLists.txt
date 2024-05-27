@@ -21,7 +21,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED On)
 set(CMAKE_CXX_EXTENSIONS Off)
 set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Only Release mode is allowed" FORCE)
 
-project(host_xvf_control)
+project(host_dsp_control)
 
 set(DEVICE_CONTROL_PATH ${CMAKE_SOURCE_DIR}/src/device_control)
 
