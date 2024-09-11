@@ -10,7 +10,7 @@ static opt_t options[] = {
     {"--help",                    "-h",        "display this information"                                                                       },
     {"--version",                 "-v",        "print the current version of this application",                                                 },
     {"--list-commands",           "-l",        "print list of the available commands"                                                           },
-    {"--use",                     "-u",        "use specific hardware protocol, I2C, SPI and USB are available to use"                          },
+    {"--use",                     "-u",        "use specific hardware protocol, I2C, SPI, USB and HID are available to use"                          },
     {"--command-map-path",        "-cmp",      "use specific command map path, the path is relative to the working dir"                         },
     {"--bypass-range-check",      "-br",       "bypass parameter range check",                                                                  },
     {"--dump-params",             "-d",        "print all readable parameters"                                                                  },

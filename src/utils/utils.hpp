@@ -80,6 +80,9 @@ const std::string device_spi_dl_name = "device_spi";
 /** @brief USB device driver name */
 const std::string device_usb_dl_name = "device_usb";
 
+/** @brief HID device driver name */
+const std::string device_hid_dl_name = "device_hid";
+
 /** @brief Default driver name to use */
 const std::string default_driver_name = DEFAULT_DRIVER_NAME;
 

@@ -50,6 +50,10 @@ int * get_device_init_info(dl_handle_t handle, string lib_name)
     {
         symbol = "get_info_usb";
     }
+    else if(lib_name == device_hid_dl_name)
+    {
+        symbol = "get_info_hid";
+    }
     else
     {
         cerr << "Not a valid device dl name " << lib_name << endl;
@@ -327,6 +331,10 @@ string get_device_lib_name(int * argc, char ** argv, opt_t* options, const size_
         else if (to_upper(protocol_name) == "USB")
         {
             lib_name = device_usb_dl_name;
+        }
+        else if (to_upper(protocol_name) == "HID")
+        {
+            lib_name = device_hid_dl_name;
         }
         else
         {
