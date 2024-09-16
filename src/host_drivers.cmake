@@ -228,4 +228,14 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
         POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy ${DEVICE_CONTROL_PATH}/host/libusb/OSX64/libusb-1.0.0.dylib ${CMAKE_BINARY_DIR}
     )
+elseif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+    # Define the path to the hidapi.dll
+    set(HIDAPI_DLL_PATH "${DEVICE_CONTROL_PATH}/host/hidapi/Win64/${HIDAPI_VERSION}/hidapi.dll")
+
+    # Add a custom command to copy the hidapi.dll to the output directory of the target
+    add_custom_command(TARGET device_hid POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${HIDAPI_DLL_PATH}"
+        $<TARGET_FILE_DIR:device_hid>
+    )
 endif()
