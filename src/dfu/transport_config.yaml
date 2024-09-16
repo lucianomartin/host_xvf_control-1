@@ -1,2 +1,13 @@
 I2C_ADDRESS: 0x2C
 SPI_MODE: 0
+HID_DEVICES:
+  - 3
+  - 0x20B1
+  - 0x4F00
+  - 3
+  - 0x20B1
+  - 0x4F01
+  - 3
+  - 0x20B1
+  - 0
+  - 3

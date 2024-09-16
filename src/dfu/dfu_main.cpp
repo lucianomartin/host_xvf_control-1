@@ -147,12 +147,13 @@ int main(int argc, char ** argv)
     YAML::Node config;
     int* i2c_info = new int[1];
     int* spi_info = new int[2];
+    int* hid_info = NULL;
     string yaml_file_name;
 
     // Check if --use option is used
     string device_dl_name = get_device_lib_name(&argc, argv, options, num_options);
-    if (device_dl_name != device_i2c_dl_name) {
-        cerr << "Unsupported hardware protocol. Only I2C is available for this operation." << endl;
+    if (device_dl_name != device_i2c_dl_name && device_dl_name != device_hid_dl_name) {
+        cerr << "Unsupported hardware protocol. Only HID and I2C protocols are available for this operation." << endl;
         exit(HOST_APP_ERROR);
     }
 
@@ -172,6 +173,12 @@ int main(int argc, char ** argv)
         i2c_info[0] = config["I2C_ADDRESS"].as<int>();
         spi_info[0] = config["SPI_MODE"].as<int>();
         spi_info[1] = 1024;
+
+        int hid_info_size = config["HID_DEVICES"].size();
+        hid_info = new int[hid_info_size];
+        for (int i=0; i<hid_info_size; i++) {
+            hid_info[i] = config["HID_DEVICES"][i].as<int>();
+        }
     } else {
         cerr << "File \'" << yaml_file_name << "\' not found" << endl;
         exit(HOST_APP_ERROR);
@@ -203,6 +210,9 @@ int main(int argc, char ** argv)
     } else if(device_dl_name == device_spi_dl_name)
     {
         device_init_info = spi_info;
+    } else if (device_dl_name == device_hid_dl_name)
+    {
+        device_init_info = hid_info;
     }
     string device_dl_path = get_dynamic_lib_path(device_dl_name);
     dl_handle_t device_handle = get_dynamic_lib(device_dl_path);
