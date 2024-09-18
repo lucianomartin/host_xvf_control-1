@@ -175,21 +175,25 @@ elseif (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     include_directories(${HIDAPI_INCLUDE_DIRS})
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     add_compile_definitions(nologo WAll WX- O2 EHa)
-    target_link_directories(framework_rtos_sw_services_device_control_host_hid INTERFACE "${DEVICE_CONTROL_PATH}/host/hidapi/Win32")
     set(hidapi_INCLUDE_DIRS "${DEVICE_CONTROL_PATH}/host/hidapi/include")
-    set(LINK_LIBS hidapi)
+    target_link_directories(framework_rtos_sw_services_device_control_host_hid INTERFACE "${DEVICE_CONTROL_PATH}/host/libusb/Win32")
+    set(libusb-1.0_INCLUDE_DIRS "${DEVICE_CONTROL_PATH}/host/libusb/Win32")
+    set(LINK_LIBS libusb-1.0)
 endif()
 
 target_sources(framework_rtos_sw_services_device_control_host_hid
     INTERFACE
         ${DEVICE_CONTROL_PATH}/host/util.c
         ${DEVICE_CONTROL_PATH}/host/device_access_hid.c
+        ${DEVICE_CONTROL_PATH}/host/hidapi/Win32/hid.c
 )
 target_include_directories(framework_rtos_sw_services_device_control_host_hid
     INTERFACE
         ${DEVICE_CONTROL_PATH}/api
         ${DEVICE_CONTROL_PATH}/host
         ${hidapi_INCLUDE_DIRS}
+        ${libusb-1.0_INCLUDE_DIRS}
+
 )
 target_compile_definitions(framework_rtos_sw_services_device_control_host_hid INTERFACE USE_HID=1)
 
@@ -228,15 +232,5 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
         TARGET device_usb
         POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy ${DEVICE_CONTROL_PATH}/host/libusb/OSX64/libusb-1.0.0.dylib ${CMAKE_BINARY_DIR}
-    )
-elseif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-    # Define the path to the hidapi.dll
-    set(HIDAPI_DLL_PATH "${DEVICE_CONTROL_PATH}/host/hidapi/Win64/${HIDAPI_VERSION}/hidapi.dll")
-
-    # Add a custom command to copy the hidapi.dll to the output directory of the target
-    add_custom_command(TARGET device_hid POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${HIDAPI_DLL_PATH}"
-        $<TARGET_FILE_DIR:device_hid>
     )
 endif()

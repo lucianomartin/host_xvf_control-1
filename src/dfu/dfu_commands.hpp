@@ -119,7 +119,7 @@ class CommandList
     /** @brief Resource ID of DFU controller servicer
     * @note The value is read from the DFU yaml file
     **/
-    uint16_t dfu_controller_servicer_resid;
+    control_resid_t dfu_controller_servicer_resid;
 
     public:
 
@@ -141,7 +141,7 @@ class CommandList
     * @brief Set function for DFU controller servicer resource ID
     * @param id            Resource ID
     **/
-    void set_dfu_controller_servicer_resid(uint16_t res_id) {dfu_controller_servicer_resid = res_id;};
+    void set_dfu_controller_servicer_resid(control_resid_t res_id) {dfu_controller_servicer_resid = res_id;};
 
     /**
     * @brief Get function for command ID
@@ -163,7 +163,7 @@ class CommandList
     *
     * @return               Resource ID
     **/
-    uint16_t get_dfu_controller_servicer_resid() {return dfu_controller_servicer_resid;};
+    control_resid_t get_dfu_controller_servicer_resid() {return dfu_controller_servicer_resid;};
 
     /**
     * @brief Executes a single get command

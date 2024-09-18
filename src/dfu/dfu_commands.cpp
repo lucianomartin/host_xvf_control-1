@@ -122,7 +122,7 @@ void CommandList::parse_dfu_cmds_yaml(string yaml_file_full_path, uint8_t is_ver
         size_t startPos = resource_id_string.find('(');
         size_t endPos = resource_id_string.find(')', startPos);
         int resource_id = -1;
-        if (startPos != string::npos and endPos != string::npos)
+        if (startPos != string::npos && endPos != string::npos)
         {
             resource_id = stoi(resource_id_string.substr(startPos + 1, endPos - startPos - 1), 0, 16);
         }

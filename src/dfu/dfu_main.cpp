@@ -118,7 +118,7 @@ uint16_t check_upload_start(int * argc, char ** argv)
     if (index == 0) {
         return INVALID_TRANSPORT_BLOCK_NUM;
     }
-    if (index + 1 >= *argc)
+    if (index + 1 >= (size_t) *argc)
     {
         cerr << "Missing block number" << endl;
         exit(HOST_APP_ERROR);

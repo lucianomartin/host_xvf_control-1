@@ -31,11 +31,19 @@ set(COMMON_INCLUDES
 
 add_executable( ${APP_NAME})
 
-target_compile_options( ${APP_NAME}
-    PRIVATE
-        -Werror
-        -g
-)
+# Add options for different compilers
+if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    target_compile_options( ${APP_NAME}
+        PRIVATE
+            -WX
+    )
+else()
+    target_compile_options( ${APP_NAME}
+        PRIVATE
+            -Werror
+            -g
+    )
+endif()
 
 target_sources( ${APP_NAME}
     PRIVATE
@@ -52,14 +60,19 @@ target_compile_definitions( ${APP_NAME}
 
 target_link_libraries( ${APP_NAME}
     PUBLIC
-        dl
         yaml-cpp::yaml-cpp
 )
 
+if (NOT ${CMAKE_SYSTEM_NAME} STREQUAL Windows)
+target_link_libraries( ${APP_NAME}
+    PUBLIC
+        dl
+)
 target_link_options( ${APP_NAME}
     PRIVATE
         -rdynamic
 )
+endif() # not windows
 
 # Copy YAML file to folder with app binary
 add_custom_target(compile_commands ALL
