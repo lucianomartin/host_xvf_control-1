@@ -30,7 +30,7 @@ control_ret_t Device::device_init()
             if(ret == CONTROL_SUCCESS)
             {
                 device_initialised = true;
-                cout << "Device (HID)::device_init() -- Found device VID: 0x" << hex << setw(4) << setfill('0') << device_info[offset] << " PID: 0x" << device_info[offset+1] << dec << setw(0) <<  endl;
+                cout << "Device (HID)::device_init() -- Found device VID: 0x" << hex << setw(4) << setfill('0') << device_info[offset+1] << " PID: 0x" << device_info[offset+2] << dec << setw(0) <<  endl;
                 break;
             }
         }

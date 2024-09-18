@@ -11,14 +11,14 @@ DFU_CONTROLLER_SERVICER_RESID (0xF0):
       index: 1
       type: CMD_WRITE_ONLY
       value_type: TYPE_UINT8
-      number_of_values: 34
+      number_of_values: 130
       help: "DFU Download command. Two length bytes followed by 128 bytes of data."
       hidden: true
     - cmd: DFU_UPLOAD
       index: 2
       type: CMD_READ_ONLY
       value_type: TYPE_UINT8
-      number_of_values: 34
+      number_of_values: 130
       help: "DFU Upload command. Two length bytes followed by 128 bytes of data."
       hidden: true
     - cmd: DFU_GETSTATUS
