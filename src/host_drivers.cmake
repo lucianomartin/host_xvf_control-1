@@ -169,13 +169,16 @@ elseif ((${CMAKE_SYSTEM_NAME} MATCHES "Darwin") AND (${CMAKE_SYSTEM_PROCESSOR} M
     set(libusb-1.0_INCLUDE_DIRS "${DEVICE_CONTROL_PATH}/host/libusb/OSXARM")
     set(LINK_LIBS usb-1.0.0)
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-    set(HIDAPI_INCLUDE_DIRS "/usr/include/hidapi")
-    set(HIDAPI_LIBRARIES "/usr/lib/x86_64-linux-gnu/libhidapi-hidraw.so")
-    set(LINK_LIBS ${HIDAPI_LIBRARIES})
-    include_directories(${HIDAPI_INCLUDE_DIRS})
+    set(hidapi_INCLUDE_DIRS "${DEVICE_CONTROL_PATH}/host/hidapi/include")
+    set(hidapi_SOURCES "${DEVICE_CONTROL_PATH}/host/hidapi/linux/hid.c")
+    find_package(PkgConfig)
+    pkg_check_modules(libusb-1.0 REQUIRED libusb-1.0)
+    pkg_check_modules(libudev REQUIRED libudev)
+    set(LINK_LIBS ${libusb-1.0_LIBRARIES} ${libudev_LIBRARIES})
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     add_compile_definitions(nologo WAll WX- O2 EHa)
     set(hidapi_INCLUDE_DIRS "${DEVICE_CONTROL_PATH}/host/hidapi/include")
+    set(hidapi_SOURCES "${DEVICE_CONTROL_PATH}/host/hidapi/windows/hid.c")
     target_link_directories(framework_rtos_sw_services_device_control_host_hid INTERFACE "${DEVICE_CONTROL_PATH}/host/libusb/Win32")
     set(libusb-1.0_INCLUDE_DIRS "${DEVICE_CONTROL_PATH}/host/libusb/Win32")
     set(LINK_LIBS libusb-1.0)
@@ -185,7 +188,7 @@ target_sources(framework_rtos_sw_services_device_control_host_hid
     INTERFACE
         ${DEVICE_CONTROL_PATH}/host/util.c
         ${DEVICE_CONTROL_PATH}/host/device_access_hid.c
-        ${DEVICE_CONTROL_PATH}/host/hidapi/Win32/hid.c
+        ${hidapi_SOURCES}
 )
 target_include_directories(framework_rtos_sw_services_device_control_host_hid
     INTERFACE
