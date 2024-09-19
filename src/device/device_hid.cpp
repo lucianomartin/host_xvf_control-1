@@ -26,11 +26,11 @@ control_ret_t Device::device_init()
         for(int set_idx = 0; set_idx < info_set_count; ++set_idx)
         {
             int offset = set_idx * 3; // Three members per set
-            ret = control_init_hid(static_cast<int>(device_info[offset+1]), static_cast<int>(device_info[offset+2]));
+            ret = control_init_hid(static_cast<int>(device_info[offset+1]), static_cast<int>(device_info[offset+2]), static_cast<int>(device_info[offset+3]));
             if(ret == CONTROL_SUCCESS)
             {
                 device_initialised = true;
-                cout << "Device (HID)::device_init() -- Found device VID: 0x" << hex << setw(4) << setfill('0') << device_info[offset+1] << " PID: 0x" << device_info[offset+2] << dec << setw(0) <<  endl;
+                cout << "Device (HID)::device_init() -- Found device VID: 0x" << hex << setw(4) << setfill('0') << device_info[offset+1] << ", PID: 0x" << device_info[offset+2] << ", Usage Page: 0x" <<  device_info[offset+3] << dec << setw(0) <<  endl;
                 break;
             }
         }

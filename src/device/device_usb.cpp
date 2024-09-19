@@ -1,6 +1,7 @@
 // Copyright 2022-2024 XMOS LIMITED.
 // This Software is subject to the terms of the XCORE VocalFusion Licence.
 
+#include <iomanip> // Include this header for std::hex, std::setw, and std::setfill
 #include "device.hpp"
 #include "device_control_host.h"
 
@@ -29,7 +30,8 @@ control_ret_t Device::device_init()
             if(ret == CONTROL_SUCCESS)
             {
                 device_initialised = true;
-                cout << "Device (USB)::device_init() -- Found device VID: " << device_info[offset+1] << " PID: " << device_info[offset+2] << " interface: " << device_info[offset+3] << endl;
+                cout << "Device (USB)::device_init() -- Found device VID: 0x" << hex << setw(4) << setfill('0') << device_info[offset+1] << ", PID: 0x" << device_info[offset+2] << ", interface: 0x" <<  device_info[offset+3] << dec << setw(0) <<  endl;
+
                 break;
             }
         }
