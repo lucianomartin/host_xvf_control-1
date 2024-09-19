@@ -169,7 +169,7 @@ elseif ((${CMAKE_SYSTEM_NAME} MATCHES "Darwin") AND (${CMAKE_SYSTEM_PROCESSOR} M
     set(libusb-1.0_INCLUDE_DIRS "${DEVICE_CONTROL_PATH}/host/libusb/OSXARM")
     set(LINK_LIBS usb-1.0.0)
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-    set(hidapi_INCLUDE_DIRS "${DEVICE_CONTROL_PATH}/host/hidapi/include")
+    set(hidapi_INCLUDE_DIRS "${DEVICE_CONTROL_PATH}/host/hidapi/hidapi")
     set(hidapi_SOURCES "${DEVICE_CONTROL_PATH}/host/hidapi/linux/hid.c")
     find_package(PkgConfig)
     pkg_check_modules(libusb-1.0 REQUIRED libusb-1.0)
